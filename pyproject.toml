@@ -9,7 +9,7 @@ description = "X-Wing hybrid KEM for Python (X25519 + ML-KEM-768), per draft-con
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
-authors = [{ name = "Paul Lester", email = "paul@systemslibrarian.dev" }]
+authors = [{ name = "Paul Clark", email = "paul@systemslibrarian.dev" }]
 keywords = [
     "post-quantum",
     "cryptography",

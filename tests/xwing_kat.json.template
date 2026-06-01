@@ -1,0 +1,12 @@
+{
+  "_comment": "TEMPLATE ONLY -- not real vectors. Copy to xwing_kat.json and fill with hex from the draft reference (github.com/dconnolly/draft-connolly-cfrg-xwing-kem). Do not hand-edit real vectors. All values are hex-encoded.",
+  "seed": "<32 bytes hex: X-Wing KeyGen seed>",
+  "expected_pk": "<1216 bytes hex: pk_M(1184) || pk_X(32)>",
+  "eseed": "<64 bytes hex: encapsulation coins>",
+  "expected_ct": "<1120 bytes hex: ct_M(1088) || ct_X(32)>",
+  "expected_ss": "<32 bytes hex: shared secret>",
+  "ss_m": "<optional 32 bytes hex: ML-KEM shared secret, enables backend-free combiner KAT>",
+  "ss_x": "<optional 32 bytes hex: X25519 shared secret>",
+  "ct_x": "<optional 32 bytes hex: X25519 ephemeral public key>",
+  "pk_x": "<optional 32 bytes hex: recipient X25519 public key>"
+}

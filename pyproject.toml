@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "xwing-kem"
-version = "0.1.0"
+version = "0.2.0"
 description = "X-Wing hybrid KEM for Python (X25519 + ML-KEM-768), per draft-connolly-cfrg-xwing-kem"
 readme = "README.md"
 license = { text = "MIT" }

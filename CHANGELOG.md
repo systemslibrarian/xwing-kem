@@ -4,6 +4,36 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-06-01
+
+### Changed
+
+- **BREAKING (class API):** `XWing.encapsulate()` now returns
+  `(shared_secret, ciphertext)`, matching the functional `encapsulate()`, the
+  draft's pseudocode, and pyca/cryptography. It previously returned
+  `(ciphertext, shared_secret)`. Update call sites from `ct, ss =
+  kem.encapsulate(pk)` to `ss, ct = kem.encapsulate(pk)`. The functional API is
+  unchanged.
+- Clearer, more actionable `ValueError` messages for wrong-length public keys,
+  ciphertexts, and secret keys (now state the expected structure and common
+  causes).
+
+### Added
+
+- `examples/` directory with runnable scripts (functional API, class API, and
+  backend selection).
+- README: "Key Features", "When to use X-Wing", a prose "Performance" section
+  with measured benchmarks vs pure X25519, and a regression test pinning the
+  functional/class return-order contract.
+
+### Fixed
+
+- README links are now absolute GitHub URLs so they resolve on PyPI (relative
+  links such as `KNOWN-GAPS.md` previously 404'd on the project page).
+- README/`KNOWN-GAPS.md` validation status corrected: the package **is**
+  validated against the official X-Wing KAT vectors (the 0.1.0 page predated
+  that work and still read "not yet validated").
+
 ## [0.1.0] - 2026-06-01
 
 Initial release.
@@ -33,4 +63,5 @@ Initial release.
 - Constant-time guarantees apply to the C backend primitives only, not the
   Python combiner glue.
 
+[0.2.0]: https://github.com/systemslibrarian/xwing-kem/releases/tag/v0.2.0
 [0.1.0]: https://github.com/systemslibrarian/xwing-kem/releases/tag/v0.1.0

@@ -110,7 +110,11 @@ def encapsulate(public_key: bytes, prefer_backend: str | None = None) -> Tuple[b
     """
     if len(public_key) != XWING_PK_LEN:
         raise ValueError(
-            f"X-Wing public key must be {XWING_PK_LEN} bytes, got {len(public_key)}"
+            f"Invalid X-Wing public key: expected {XWING_PK_LEN} bytes "
+            f"(pk_M[{MLKEM768_PK_LEN}] || pk_X[{X25519_LEN}]), got "
+            f"{len(public_key)}. Make sure you are passing an X-Wing public "
+            f"key (kp.public_key), not a ciphertext, secret key, or a bare "
+            f"ML-KEM/X25519 key."
         )
     pk_M = public_key[:MLKEM768_PK_LEN]
     pk_X = public_key[MLKEM768_PK_LEN:]
@@ -130,11 +134,18 @@ def decapsulate(ciphertext: bytes, secret_key: bytes, prefer_backend: str | None
     """Decapsulate an X-Wing ciphertext. Returns the 32-byte shared secret."""
     if len(ciphertext) != XWING_CT_LEN:
         raise ValueError(
-            f"X-Wing ciphertext must be {XWING_CT_LEN} bytes, got {len(ciphertext)}"
+            f"Invalid X-Wing ciphertext: expected {XWING_CT_LEN} bytes "
+            f"(ct_M[{MLKEM768_CT_LEN}] || ct_X[{X25519_LEN}]), got "
+            f"{len(ciphertext)}. This should be the ciphertext returned by "
+            f"encapsulate(), unmodified and untruncated."
         )
     if len(secret_key) <= X25519_LEN:
         raise ValueError(
-            f"X-Wing secret key too short: {len(secret_key)} bytes"
+            f"Invalid X-Wing secret key: expected more than {X25519_LEN} bytes "
+            f"(backend-specific sk_M || sk_X[{X25519_LEN}]), got "
+            f"{len(secret_key)}. Secret keys are backend-specific and not "
+            f"portable: a key generated with one backend (cryptography vs "
+            f"liboqs) cannot be used with the other."
         )
     ct_M = ciphertext[:MLKEM768_CT_LEN]
     ct_X = ciphertext[MLKEM768_CT_LEN:]

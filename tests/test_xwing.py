@@ -33,9 +33,27 @@ def test_roundtrip_functional():
 def test_roundtrip_class():
     kem = XWing()
     pk, sk = kem.generate_keypair()
-    ct, ss = kem.encapsulate(pk)
+    ss, ct = kem.encapsulate(pk)   # (shared_secret, ciphertext), matching functional API
     ss2 = kem.decapsulate(ct, sk)
     assert ss == ss2
+    assert len(ct) == XWING_CT_LEN
+    assert len(ss) == SHARED_SECRET_LEN
+
+
+def test_functional_and_class_apis_share_return_order():
+    # Both encapsulate() forms must return (shared_secret, ciphertext) in the
+    # same order. Regression guard for the 0.2.0 API-consistency fix.
+    kp = generate_keypair()
+    f_ss, f_ct = encapsulate(kp.public_key)
+    assert len(f_ss) == SHARED_SECRET_LEN and len(f_ct) == XWING_CT_LEN
+
+    kem = XWing()
+    c_ss, c_ct = kem.encapsulate(kp.public_key)
+    assert len(c_ss) == SHARED_SECRET_LEN and len(c_ct) == XWING_CT_LEN
+
+    # Cross-decapsulate: a ciphertext from either API decapsulates with the
+    # functional decapsulate to a 32-byte secret (orders line up).
+    assert len(decapsulate(c_ct, kp.secret_key)) == SHARED_SECRET_LEN
 
 
 def test_public_key_and_ciphertext_sizes():

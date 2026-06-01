@@ -20,7 +20,7 @@ Class API (same behaviour, object style):
 
     kem = XWing()
     pk, sk = kem.generate_keypair()
-    ct, ss = kem.encapsulate(pk)
+    ss, ct = kem.encapsulate(pk)        # same (shared_secret, ciphertext) order
     ss2 = kem.decapsulate(ct, sk)
 
 Backend: prefers pyca/cryptography's native ML-KEM (v48+, when built
@@ -40,7 +40,7 @@ from ._core import (
 )
 from ._backend import get_backend
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "XWing",
@@ -66,8 +66,11 @@ class XWing:
 
     prefer_backend: 'cryptography', 'liboqs', or None to auto-select.
 
-    Note the argument order on encapsulate/decapsulate mirrors the
-    functional API and the draft: ciphertext first on decapsulate.
+    Return values match the functional API exactly (and the draft's
+    pseudocode): ``encapsulate`` returns ``(shared_secret, ciphertext)`` and
+    ``decapsulate`` returns the shared secret. ``generate_keypair`` returns a
+    plain ``(public_key, secret_key)`` tuple here, versus the ``XWingKeyPair``
+    dataclass returned by the functional ``generate_keypair``.
     """
 
     def __init__(self, prefer_backend: str | None = None):
@@ -80,8 +83,8 @@ class XWing:
         return kp.public_key, kp.secret_key
 
     def encapsulate(self, public_key: bytes):
-        ss, ct = encapsulate(public_key, self.prefer_backend)
-        return ct, ss
+        # (shared_secret, ciphertext) -- consistent with the functional API.
+        return encapsulate(public_key, self.prefer_backend)
 
     def decapsulate(self, ciphertext: bytes, secret_key: bytes) -> bytes:
         return decapsulate(ciphertext, secret_key, self.prefer_backend)
